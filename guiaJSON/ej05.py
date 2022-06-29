@@ -1,4 +1,5 @@
 from json import dumps, loads
+import os
 
 pelis = [
     {
@@ -126,11 +127,53 @@ pelis = [
 strJson = dumps(pelis)
 pelisDict = loads(strJson)
 
-
+createCsv = open("pelis.csv", "w", encoding="utf-8")
+createCsv.write("Nombre,Actor,Rating,Recaudacion\n")
+ 
 for i in range(len(pelisDict)):
   nombre = pelisDict[i]['Title']
   actor = pelisDict[i]['Actors'].split(',')[0]
-  ratings = pelisDict[i]['Ratings'][1]["Value"].replace('%','')
+  rating = pelisDict[i]['Ratings'][1]["Value"].replace('%','')
   recaudacion = int(pelisDict[i]['BoxOffice'].replace('$','').replace(',',''))
+  createCsv.write(f"{nombre},{actor},{rating},{recaudacion}\n")
+createCsv.close()
 
-  
+a = open("pelis.csv", "r", encoding="utf-8")
+listaPelisCsv = a.readlines()    
+
+def ratingPromedio():
+    print("\nRating promedio de las peliculas\n")
+    totalizador = 0 
+    for i in range(1,len(listaPelisCsv)):
+        totalizador = totalizador + int(listaPelisCsv[i].split(",")[2])
+    print(f"El promedio de rating de las peliculas es: {totalizador / (len(listaPelisCsv)-1)}\n")
+    input("Presione Enter para volver al Menú")
+
+def sumaRecaudaciones():
+    print("\nSuma de recaudaciones de las peliculas\n")
+    totalizador = 0 
+    for i in range(1,len(listaPelisCsv)):
+        totalizador = totalizador + int(listaPelisCsv[i].split(",")[3])
+    print(f"La suma de las recaudaciones totales de las peliculas es de: ${totalizador}\n")
+    input("Presione Enter para volver al Menú")
+
+a.close()
+
+def borrar():
+    pass
+
+def menu():
+    op = ""
+    while op != "0":
+        os.system("cls")
+        print("Menú de Opciones\n")
+        print("1) Rating promedio de las peliculas")
+        print("2) Suma de recaudaciones de las peliculas")
+        print("0) Salir")
+        op = input("Ingrese una opción: ")
+        match op:
+            case "1": ratingPromedio()
+            case "2": sumaRecaudaciones()
+            case "3": borrar()
+
+menu()
